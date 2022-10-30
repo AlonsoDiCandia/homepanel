@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct BulbDecoder: Codable {
+    let status: String
+    let ok: String
+}

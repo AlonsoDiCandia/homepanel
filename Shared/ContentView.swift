@@ -8,9 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var bulbStatus = "unknown"
+    @State private var fetching = false
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            HStack (alignment: .center) {
+                VStack {
+                    Button("Dormitorio",
+                           action: {
+                                Task {
+                                    await getJoke("dormitorio")
+                                }
+                    })
+                }
+            }
+        }
+    }
+    func getJoke(_ type: String) async {
+        let url = "http://localhost:5051/api/power/dormitorio"
+        let apiService = APIService(urlString: url)
+        fetching.toggle()
+        defer {
+            fetching.toggle()
+        }
+        do {
+            let bulDecoder:BulbDecoder = try await apiService.getJSON()
+            bulbStatus = bulDecoder.status
+        } catch {
+            bulbStatus = error.localizedDescription
+        }
     }
 }
 
